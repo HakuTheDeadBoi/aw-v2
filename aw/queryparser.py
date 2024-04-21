@@ -1,5 +1,9 @@
 from lxml import etree
 
+from aw.query import Query
+from aw.constraint import Constraint
+from aw.constraintgroup import ConstraintGroup
+
 class QueryParser:
     ROOT = "queries"
 
@@ -45,16 +49,13 @@ class QueryParser:
         newQ = self.etree.SubElement(newQuery, "q")
         newQ.text = query.q
 
-        # <query><constraints>
-        newConstraints = self.etree.SubElement(newQuery, "constraints")
-
         for group in query.groups:
-            # <query><constraints><group>
-            newGroup = self.etree.SubElement(newConstraints, "group")
-            newGroup.set("bool", group.bool)
+            # <query><constraint-group>
+            newGroup = self.etree.SubElement(newQuery, "constraint-group")
+            newGroup.set("bool-relation", group.boolRelation)
 
             for constraint in group.constraints:
-                # <query><constraints><group><constraint>
+                # <query><constraint-group><constraint>
                 newConstraint = self.etree.SubElement(newGroup, "constraint")
                 newConstraint.set("type", constraint.type)
                 newConstraint.set("relation", constraint.relation)
@@ -70,4 +71,34 @@ class QueryParser:
         self.etree.write(self.filePath, encoding="utf-8", xml_declaration=False, pretty_print=True)
 
     def getQueryList(self):
-        pass
+        queryList = []
+        for xmlQuery in self.root.findall('query'):
+            print(self.root.findall('query'))
+            newQuery = Query()
+            # get query text
+            newQuery.q = xmlQuery.find('q').text
+
+            for group in xmlQuery.findall('constraint-group'):
+                newGroup = ConstraintGroup()
+                newGroup.boolRelation = group.get("bool-relation")
+
+                for constraint in group.findall('constraint'):
+                    newConstraint = Constraint()
+                    newConstraint.type = constraint.get("type")
+                    newConstraint.relation = constraint.get("relation")
+                    newConstraint.preventDecap = constraint.get("prevent-decap")
+                    newConstraint.key, newConstraint.value = constraint.text.split(":")
+
+                    newGroup.constraints.append(newConstraint)
+                
+                newQuery.groups.append(newGroup)
+            
+            queryList.append(newQuery)
+
+        return queryList
+
+            
+
+
+
+        
