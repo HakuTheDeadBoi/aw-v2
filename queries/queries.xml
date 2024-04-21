@@ -1,0 +1,24 @@
+<queries script-name="trhknih.py">
+    <query id="1">
+        <q>vesmirna odysea</q>
+        <constraint-group bool="or">
+            <constraint type="text" relation="==" prevent-decap="false">
+                publisher:laser
+            </constraint>
+            <constraint type="text" relation="==" prevent-decap="false">
+                publisher:laser-books
+            </constraint>
+        </constraint-group>
+    </query>
+    <query id="2">
+        <q>murakami</q>
+        <constraint-group bool="or">
+            <constraint type="text" relation="in" prevent-decap="false">
+                author: ryu
+            </constraint>
+            <constraint type="text" relation="in" prevent-decap="false">
+                author: rju
+            </constraint>
+        </constraint-group>
+    </query>
+</queries>

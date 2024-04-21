@@ -1,3 +1,5 @@
+from os.path import join
+
 from lxml import etree
 
 from aw.query import Query
@@ -32,7 +34,7 @@ class QueryParser:
         self.lastQueryId = 0
     
     def initFile(self, rootPath, destDir, fileName):
-        self.filePath = f"{rootPath}{destDir}{fileName}.xml"
+        self.filePath = join(rootPath, destDir, fileName)
 
         try:
             self.loadFile(self.filePath)
@@ -73,7 +75,6 @@ class QueryParser:
     def getQueryList(self):
         queryList = []
         for xmlQuery in self.root.findall('query'):
-            print(self.root.findall('query'))
             newQuery = Query()
             # get query text
             newQuery.q = xmlQuery.find('q').text
