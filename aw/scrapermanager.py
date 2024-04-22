@@ -42,9 +42,7 @@ class ScraperManager:
 
     def _scanForRecords(self):
         for scraper in self.scraperList:
-            print(scraper)
             for query in self.queryList:
-                print(query)
                 allRecords = []
                 # place to filter results
                 allRecords.extend(scraper.getRecords(query))

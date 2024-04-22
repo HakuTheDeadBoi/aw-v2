@@ -2,11 +2,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 
-from aw.loggerfactory import Logger
-
-
 class Mailer:
-    def __init__(self, mail, password, smtp, smtpport, logger):
+    def __init__(self, mail, password, smtp, smtpport):
         self.sender, self.receiver = mail, mail
         self.password = password
         self.smtp = smtp
@@ -14,8 +11,6 @@ class Mailer:
 
         self.message = None
         self.messageBody = None
-
-        self.logger = logger
 
     def sendMail(self, records):
         self._composeMail(records)
@@ -31,7 +26,7 @@ class Mailer:
         self.message["To"] = self.receiver
         self.message["Subject"] = "subject"
 
-        self._composeMailBody(records)
+        self.messageBody = self._composeMailBody(records)
 
         self.message.attach(MIMEText(self.messageBody, "html"))
 

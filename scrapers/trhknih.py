@@ -71,7 +71,7 @@ class TrhknihScraper(Scraper):
                 if span_price:
                     record = Record()
                     
-                    record.link = f"{TrhknihScraper.WEB_URL}{span6.find("a")["href"]}"
+                    record.link = f'{TrhknihScraper.WEB_URL}{span6.find("a")["href"]}'
                     record.book = span6.find("a").text
                     record.price = span6.find("span").text
                     record.year = span6.find_all("em")[0].text
