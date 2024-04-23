@@ -1,6 +1,6 @@
 import logging
 
-from aw.constants import ROOT_DIR
+from conf import ROOT_DIR
 
 class LoggerFactory:
     @staticmethod

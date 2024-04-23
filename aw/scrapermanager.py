@@ -2,7 +2,7 @@ from os.path import join
 from os import listdir
 import importlib.util
 
-from aw.constants import (
+from conf import (
     ROOT_DIR, SCRAPERS_DIR, QUERIES_DIR, QUERIES_FILENAME_DEFAULT
 )
 from aw.scraper import Scraper

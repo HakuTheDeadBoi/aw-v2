@@ -42,6 +42,7 @@ class Scheduler:
         records = self.scraperManager.getRecords()
         if self.mail and self.password and self.smtpServer and self.port:
             self.mailer.sendMail(records)
+            print("mail sent")
         else:
             raise ValueError("Mailer is not initialized!")
         
