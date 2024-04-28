@@ -11,7 +11,6 @@ class QueryParser:
 
     def __init__(self):
         self.etree = etree
-        self.file = ""
         self.xmlTree = None
         self.root = None
         self.lastQueryId = 0
@@ -33,8 +32,11 @@ class QueryParser:
         self.xmlTree = self.etree.ElementTree(self.root)
         self.lastQueryId = 0
     
-    def initFile(self, rootPath, destDir, fileName):
-        self.filePath = join(rootPath, destDir, fileName)
+    def initFile(self, rootPath=None, destDir=None, fileName=None):
+        if (rootPath == None or destDir == None or fileName == None) and self.filePath != "":
+            pass
+        else:
+            self.filePath = join(rootPath, destDir, fileName)
 
         try:
             self.loadFile(self.filePath)
@@ -73,6 +75,9 @@ class QueryParser:
         self.etree.write(self.filePath, encoding="utf-8", xml_declaration=False, pretty_print=True)
 
     def getQueryList(self):
+        self.resetParser()
+        self.initFile()
+
         queryList = []
         for xmlQuery in self.root.findall('query'):
             newQuery = Query()
@@ -98,6 +103,10 @@ class QueryParser:
 
         return queryList
 
+    def resetParser(self):
+        self.xmlTree = None
+        self.root = None
+        self.lastQueryId = 0
             
 
 

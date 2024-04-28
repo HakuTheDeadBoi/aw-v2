@@ -20,6 +20,9 @@ class Scheduler:
         self.mailer = None
         self.scraperManager = None
 
+        self.enabled = False
+        self.currentJob = None
+
     def setScheduling(self, freq, hour, day):
         self.freq = freq
         self.hour = hour
@@ -38,7 +41,17 @@ class Scheduler:
     def initLogger(self, logger):
         self.logger = logger
 
+    def enable(self):
+        self.enabled = True
+
+    def disable(self):
+        self.enabled = False
+
+    def switch(self):
+        self.enabled = not(self.enabled)
+
     def run(self):
+        print("start run")
         records = self.scraperManager.getRecords()
         if self.mail and self.password and self.smtpServer and self.port:
             self.mailer.sendMail(records)
@@ -50,29 +63,44 @@ class Scheduler:
         thread = threading.Thread(target=self.run)
         thread.start()
 
+    def reset(self):
+        if self.currentJob:
+            schedule.cancel_job(self.currentJob)
+            self.currentJob = None
+        
+        self.schedule(self)
+
+    def changesScheduling(self, newFreq = None, newDay = None, newHour = None):
+        self.freq = newFreq or self.freq
+        self.day = newDay or self.day
+        self.hour = newHour or self.hour
+
+        self.reset()
+
     def schedule(self):
         match self.freq:
             case "hourly":
-                schedule.every().hour.at(self.hour).do(self.threadedRun)
+                print("start hourly")
+                self.currentJob = schedule.every().hour.at(self.hour[2:]).do(self.threadedRun)
             case "daily":
-                schedule.every().day.at(self.hour).do(self.threadedRun)
+                self.currentJob = schedule.every().day.at(self.hour).do(self.threadedRun)
             case "weekly":
                 match self.day[:3]:
                     case "mon":
-                        schedule.every().monday.at(self.hour).do(self.threadedRun)
+                        self.currentJob = schedule.every().monday.at(self.hour).do(self.threadedRun)
                     case "tue":
-                        schedule.every().tuesday.at(self.hour).do(self.threadedRun)
+                        self.currentJob = schedule.every().tuesday.at(self.hour).do(self.threadedRun)
                     case "wed":
-                        schedule.every().wednesday.at(self.hour).do(self.threadedRun)
+                        self.currentJob = schedule.every().wednesday.at(self.hour).do(self.threadedRun)
                     case "thu":
-                        schedule.every().thursday.at(self.hour).do(self.threadedRun)
+                        self.currentJob = schedule.every().thursday.at(self.hour).do(self.threadedRun)
                     case "fri":
-                        schedule.every().friday.at(self.hour).do(self.threadedRun)
+                        self.currentJob = schedule.every().friday.at(self.hour).do(self.threadedRun)
                     case "sat":
-                        schedule.every().saturday.at(self.hour).do(self.threadedRun)
+                        self.currentJob = schedule.every().saturday.at(self.hour).do(self.threadedRun)
                     case "sun":
-                        schedule.every().sunday.at(self.hour).do(self.threadedRun)
+                        self.currentJob = schedule.every().sunday.at(self.hour).do(self.threadedRun)
         
-        while True:
+        while self.enabled:
             schedule.run_pending()
             time.sleep(1)

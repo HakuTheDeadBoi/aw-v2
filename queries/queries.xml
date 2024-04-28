@@ -16,7 +16,7 @@
             <constraint type="text" relation="in" prevent-decap="false">
                 author: ryu
             </constraint>
-            <constraint type="text" relation="in" prevent-decap="false">
+            <constraint type="text" relation="==" prevent-decap="false">
                 author: rju
             </constraint>
         </constraint-group>
